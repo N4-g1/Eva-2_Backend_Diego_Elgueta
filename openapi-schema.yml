@@ -1,0 +1,1107 @@
+openapi: 3.0.3
+info:
+  title: Nexo Salud API
+  version: 1.0.0
+  description: API B2B para abastecimiento médico, inventario y solicitudes institucionales.
+paths:
+  /api/auth/registro/:
+    post:
+      operationId: api_auth_registro_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/carro-insumos/:
+    get:
+      operationId: api_carro_insumos_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CartItem'
+          description: ''
+    post:
+      operationId: api_carro_insumos_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemWriteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartItemWriteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartItemWriteRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItem'
+          description: ''
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItem'
+          description: ''
+    delete:
+      operationId: carro_insumos_vaciar
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/carro-insumos/{id}/:
+    patch:
+      operationId: api_carro_insumos_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCartItemQuantityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCartItemQuantityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCartItemQuantityRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItem'
+          description: ''
+    delete:
+      operationId: carro_insumo_eliminar
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/categorias/:
+    get:
+      operationId: api_categorias_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: api_categorias_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/categorias/{id}/:
+    get:
+      operationId: api_categorias_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este categoria.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: api_categorias_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este categoria.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: api_categorias_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este categoria.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: api_categorias_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este categoria.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/insumos/:
+    get:
+      operationId: api_insumos_list
+      parameters:
+      - in: query
+        name: available
+        schema:
+          type: boolean
+      - in: query
+        name: category
+        schema:
+          type: string
+      - in: query
+        name: expiry_before
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: max_price
+        schema:
+          type: number
+      - in: query
+        name: min_price
+        schema:
+          type: number
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSupplyList'
+          description: ''
+    post:
+      operationId: api_insumos_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SupplyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SupplyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supply'
+          description: ''
+  /api/insumos/{id}/:
+    get:
+      operationId: api_insumos_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este insumo.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supply'
+          description: ''
+    put:
+      operationId: api_insumos_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este insumo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SupplyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SupplyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supply'
+          description: ''
+    patch:
+      operationId: api_insumos_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este insumo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSupplyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSupplyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSupplyRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supply'
+          description: ''
+    delete:
+      operationId: api_insumos_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este insumo.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/mis-solicitudes/:
+    get:
+      operationId: api_mis_solicitudes_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrderList'
+          description: ''
+  /api/solicitudes/:
+    get:
+      operationId: api_solicitudes_list
+      description: Entrega a bodega la lista operativa de pedidos que debe despachar.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qué campo usar para ordenar los resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Un término de búsqueda.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrderList'
+          description: ''
+  /api/solicitudes/{id}/estado/:
+    patch:
+      operationId: api_solicitudes_estado_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/solicitudes/confirmar/:
+    post:
+      operationId: api_solicitudes_confirmar_create
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleTokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoleTokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoleTokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          description: No response body
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          allOf:
+          - $ref: '#/components/schemas/Supply'
+          readOnly: true
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+      required:
+      - id
+      - product
+      - quantity
+    CartItemWriteRequest:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+          minimum: 1
+          default: 1
+      required:
+      - product_id
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nombre
+          maxLength: 80
+        slug:
+          type: string
+          title: Identificador
+          maxLength: 90
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    CategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Nombre
+          maxLength: 80
+        slug:
+          type: string
+          minLength: 1
+          title: Identificador
+          maxLength: 90
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - name
+      - slug
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - items
+      - total
+      - username
+    OrderItem:
+      type: object
+      properties:
+        supply_id:
+          type: integer
+          readOnly: true
+        product_name:
+          type: string
+          maxLength: 140
+        lot:
+          type: string
+          maxLength: 60
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      required:
+      - lot
+      - product_name
+      - quantity
+      - supply_id
+      - unit_price
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedOrderList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    PaginatedSupplyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Supply'
+    PatchedCartItemQuantityRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+    PatchedCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Nombre
+          maxLength: 80
+        slug:
+          type: string
+          minLength: 1
+          title: Identificador
+          maxLength: 90
+          pattern: ^[-a-zA-Z0-9_]+$
+    PatchedOrderStatusRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+    PatchedSupplyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Nombre comercial
+          maxLength: 140
+        active_ingredient:
+          type: string
+          minLength: 1
+          title: Principio activo o detalle
+          maxLength: 180
+        category:
+          type: integer
+        lot:
+          type: string
+          minLength: 1
+          title: Lote
+          maxLength: 60
+        expiry_date:
+          type: string
+          format: date
+          title: Fecha de vencimiento
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Precio por caja
+        stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Cajas disponibles
+        is_active:
+          type: boolean
+          title: Visible en catalogo
+    Register:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: Nombre de usuario
+          description: 'Requerido. 150 carácteres como máximo. Únicamente letras,
+            dígitos y @/./+/-/_ '
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Dirección de correo electrónico
+          maxLength: 254
+        first_name:
+          type: string
+          title: Nombre
+          maxLength: 150
+        last_name:
+          type: string
+          title: Apellidos
+          maxLength: 150
+        role:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - role
+      - username
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          title: Nombre de usuario
+          description: 'Requerido. 150 carácteres como máximo. Únicamente letras,
+            dígitos y @/./+/-/_ '
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Dirección de correo electrónico
+          maxLength: 254
+        first_name:
+          type: string
+          title: Nombre
+          maxLength: 150
+        last_name:
+          type: string
+          title: Apellidos
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    RoleTokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    StatusEnum:
+      enum:
+      - PAGADO
+      - EN_PREPARACION
+      - EN_DESPACHO
+      - ENTREGADO
+      - CANCELADO
+      type: string
+      description: |-
+        * `PAGADO` - Pagado
+        * `EN_PREPARACION` - En preparacion
+        * `EN_DESPACHO` - En despacho
+        * `ENTREGADO` - Entregado
+        * `CANCELADO` - Cancelado
+    Supply:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nombre comercial
+          maxLength: 140
+        active_ingredient:
+          type: string
+          title: Principio activo o detalle
+          maxLength: 180
+        category:
+          type: integer
+        category_name:
+          type: string
+          readOnly: true
+        category_slug:
+          type: string
+          readOnly: true
+        lot:
+          type: string
+          title: Lote
+          maxLength: 60
+        expiry_date:
+          type: string
+          format: date
+          title: Fecha de vencimiento
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Precio por caja
+        stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Cajas disponibles
+        is_active:
+          type: boolean
+          title: Visible en catalogo
+      required:
+      - active_ingredient
+      - category
+      - category_name
+      - category_slug
+      - expiry_date
+      - id
+      - lot
+      - name
+      - stock
+      - unit_price
+    SupplyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Nombre comercial
+          maxLength: 140
+        active_ingredient:
+          type: string
+          minLength: 1
+          title: Principio activo o detalle
+          maxLength: 180
+        category:
+          type: integer
+        lot:
+          type: string
+          minLength: 1
+          title: Lote
+          maxLength: 60
+        expiry_date:
+          type: string
+          format: date
+          title: Fecha de vencimiento
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Precio por caja
+        stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Cajas disponibles
+        is_active:
+          type: boolean
+          title: Visible en catalogo
+      required:
+      - active_ingredient
+      - category
+      - expiry_date
+      - lot
+      - name
+      - stock
+      - unit_price
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,20 @@
+services:
+  database:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-nexo_salud}
+      POSTGRES_USER: ${POSTGRES_USER:-nexo_salud}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nexo_salud_dev}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - nexo_salud_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nexo_salud} -d ${POSTGRES_DB:-nexo_salud}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  nexo_salud_data:

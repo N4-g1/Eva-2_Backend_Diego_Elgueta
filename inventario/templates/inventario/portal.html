@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5f0">
+  <title>Nexo Salud | Abastecimiento médico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'inventario/app.css' %}">
+  <script src="{% static 'inventario/app.js' %}" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Nexo Salud, inicio"><span class="brand-mark" aria-hidden="true">+</span><span class="brand-name">Nexo Salud<small>Abastecimiento clínico</small></span></a>
+      <p class="side-label">Operaciones</p>
+      <nav class="nav" aria-label="Navegación principal">
+        <button class="active" data-view="catalog"><span aria-hidden="true">▤</span>Catálogo</button>
+        <button data-view="orders"><span aria-hidden="true">▧</span>Solicitudes <span class="nav-count" id="order-count" hidden>0</span></button>
+      </nav>
+      <div class="side-spacer"></div>
+      <div class="account"><span class="avatar" id="avatar">NS</span><span><strong id="account-name">Visitante</strong><small id="account-role">Catálogo público</small></span></div>
+    </aside>
+    <main>
+      <header class="topbar"><div class="breadcrumb">Abastecimiento <span>/</span> <strong id="breadcrumb-current">Catálogo</strong></div><div class="top-actions"><span id="session-label" class="session-label">Sesión no iniciada</span><button class="outline-button" id="auth-button">Iniciar sesión</button></div></header>
+      <section class="page-heading"><div><div class="eyebrow" id="page-eyebrow">Catálogo institucional</div><h1 id="page-title">Insumos disponibles</h1><p class="subheading" id="page-subtitle">Suministros clínicos verificados, listos para tu próxima solicitud.</p></div><button class="primary-button" id="add-product-button" hidden><span aria-hidden="true">+</span> Nuevo insumo</button></section>
+      <section class="metrics" id="metrics" aria-label="Resumen de bodega">
+        <div class="metric"><span>Insumos en catálogo</span><strong id="metric-products">0</strong></div>
+        <div class="metric"><span>Solicitudes activas</span><strong id="metric-orders">0</strong></div>
+        <div class="metric"><span>Stock bajo</span><strong id="metric-low">0</strong></div>
+        <div class="metric"><span>Próximos a vencer</span><strong id="metric-expiry">0</strong></div>
+      </section>
+      <section class="toolbar" aria-label="Filtros del catálogo">
+        <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Buscar por insumo, principio activo o lote" aria-label="Buscar insumos"></label>
+        <select id="category-filter" aria-label="Filtrar por categoría"><option value="">Todas las categorías</option></select>
+        <select id="stock-filter" aria-label="Filtrar por disponibilidad"><option value="">Cualquier stock</option><option value="true">Con existencias</option><option value="false">Agotados</option></select>
+        <span class="results-label" id="results-label"></span>
+      </section>
+      <section id="catalog-view" class="table-wrap" aria-label="Insumos disponibles"><table><thead><tr><th>Insumo / principio activo</th><th>Categoría</th><th>Lote</th><th>Vencimiento</th><th>Stock</th><th>Precio / caja</th><th></th></tr></thead><tbody id="product-rows"><tr><td colspan="7" class="empty-state">Cargando catálogo…</td></tr></tbody></table></section>
+      <section id="orders-view" hidden aria-label="Solicitudes"><div id="orders-list" class="orders-list"></div></section>
+      <footer class="student-footer"><span>{{ student_name|escape }} · {{ student_section|escape }} · {{ student_year|escape }}</span><a href="/api/docs/">Documentación API</a></footer>
+    </main>
+  </div>
+
+  <button class="cart-fab" id="cart-fab" hidden aria-label="Abrir carro"><span aria-hidden="true">▱</span><strong id="cart-count">0 cajas</strong><span class="cart-divider"></span><span id="cart-total">$0</span></button>
+
+  <dialog id="auth-dialog" aria-labelledby="auth-title"><div class="dialog-head"><div><h2 id="auth-title">Accede a Nexo Salud</h2><p id="auth-subtitle">Tu cuenta institucional para solicitar insumos.</p></div><button class="icon-button" data-close="auth-dialog" aria-label="Cerrar">×</button></div><div class="auth-tabs"><button class="active" data-auth-mode="login">Iniciar sesión</button><button data-auth-mode="register">Crear cuenta</button></div><form id="login-form" class="dialog-body form-stack"><label class="field">Usuario<input name="username" autocomplete="username" required></label><label class="field">Contraseña<input name="password" type="password" autocomplete="current-password" required></label><p class="form-error" id="login-error" role="alert"></p><button class="primary-button" type="submit">Iniciar sesión</button></form><form id="register-form" class="dialog-body form-stack" hidden><label class="field">Nombre de la institución<input name="first_name" required maxlength="150" autocomplete="organization"></label><label class="field">Usuario<input name="username" required maxlength="150" autocomplete="username"></label><label class="field">Correo electrónico<input name="email" type="email" required autocomplete="email"></label><label class="field">Contraseña<input name="password" type="password" required minlength="8" autocomplete="new-password"></label><p class="form-note">Las cuentas nuevas se registran como institución médica. El rol de bodega lo asigna un administrador.</p><p class="form-error" id="register-error" role="alert"></p><button class="primary-button" type="submit">Crear cuenta institucional</button></form></dialog>
+
+  <dialog id="cart-dialog" aria-labelledby="cart-title"><div class="dialog-head"><div><h2 id="cart-title">Solicitud de abastecimiento</h2><p>Carro persistente de tu institución · precio por caja</p></div><button class="icon-button" data-close="cart-dialog" aria-label="Cerrar">×</button></div><div class="dialog-body" id="cart-body"></div><div class="dialog-foot"><button class="secondary-button" id="clear-cart-button">Vaciar carro</button><button class="primary-button" id="checkout-button">Confirmar y pagar</button></div></dialog>
+
+  <dialog id="product-dialog" aria-labelledby="product-dialog-title"><form id="product-form"><div class="dialog-head"><div><h2 id="product-dialog-title">Nuevo insumo</h2><p>Datos del producto y existencias por lote.</p></div><button type="button" class="icon-button" data-close="product-dialog" aria-label="Cerrar">×</button></div><div class="dialog-body form-grid"><input type="hidden" name="id"><label class="field full">Nombre comercial<input name="name" required maxlength="140"></label><label class="field">Principio activo / detalle<input name="active_ingredient" required maxlength="180"></label><label class="field">Categoría<select name="category" id="product-category" required></select></label><label class="field">Lote<input name="lot" required maxlength="60"></label><label class="field">Fecha de vencimiento<input name="expiry_date" type="date" required></label><label class="field">Precio por caja ($)<input name="unit_price" type="number" min="0.01" step="0.01" required></label><label class="field">Stock de cajas<input name="stock" type="number" min="0" step="1" required></label></div><div class="dialog-foot"><button type="button" class="secondary-button" data-close="product-dialog">Cancelar</button><button type="submit" class="primary-button">Guardar insumo</button></div></form></dialog>
+
+  <dialog id="status-dialog" aria-labelledby="status-title"><form id="status-form"><div class="dialog-head"><div><h2 id="status-title">Actualizar solicitud</h2><p id="status-order-label"></p></div><button type="button" class="icon-button" data-close="status-dialog" aria-label="Cerrar">×</button></div><div class="dialog-body"><input type="hidden" name="id"><label class="field">Nuevo estado<select name="status" id="new-status" required></select></label><p class="form-note">Al cancelar, las cajas reservadas se reincorporan al stock disponible.</p></div><div class="dialog-foot"><button type="button" class="secondary-button" data-close="status-dialog">Volver</button><button type="submit" class="primary-button">Actualizar estado</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
